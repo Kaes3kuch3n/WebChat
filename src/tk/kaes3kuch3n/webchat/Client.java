@@ -60,6 +60,7 @@ public class Client extends JFrame {
 		console("Welcome, " + user + "!");
 	}
 	
+	//Open a new connection to a server
 	private boolean openConnection(String address, int port) {
 		try {
 			socket = new DatagramSocket(port);
@@ -74,6 +75,7 @@ public class Client extends JFrame {
 		return true;
 	}
 	
+	//Receive data
 	private String receive() {
 		byte[] data = new byte[1024];
 		DatagramPacket packet = new DatagramPacket(data, data.length);
@@ -86,6 +88,7 @@ public class Client extends JFrame {
 		return msg;
 	}
 	
+	//Send data
 	private void send(final byte[] data) {
 		send= new Thread("Send") {
 			public void run() {
