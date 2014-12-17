@@ -98,10 +98,10 @@ public class Login extends JFrame {
 		this.getRootPane().setDefaultButton(btnLogin);
 	}
 	
-	private void login(String user, String ip, int port) {
+	private void login(String user, String address, int port) {
 		dispose();
-		System.out.println("User: " + user + "\nIP-Adresse: " + ip + "\nPort: " + port);
-		new Client(user, ip, port);
+		System.out.println("User: " + user + "\nIP-Adresse: " + address + "\nPort: " + port);
+		new Client(user, address, port);
 	}
 	
 	public static void main(String[] args) {

@@ -1,8 +1,5 @@
 package tk.kaes3kuch3n.webchat;
 
-import java.awt.Color;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -10,8 +7,6 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultCaret;
-
-import sun.font.CreatedFontTracker;
 
 import java.awt.GridBagLayout;
 
@@ -27,6 +22,12 @@ import javax.swing.JTextField;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 public class Client extends JFrame {
 	
@@ -34,19 +35,69 @@ public class Client extends JFrame {
 	private JPanel contentPane;
 	
 	private String user;
-	private String ip;
+	private String address;
 	private int port;
 	private JTextField txtMsg;
 	private JTextArea history;
 	private DefaultCaret caret;
 	
-	public Client(String user, String ip, int port) {
+	private DatagramSocket socket;
+	private InetAddress ip;
+	
+	private Thread send;
+	
+	public Client(String user, String address, int port) {
 		this.user = user;
-		this.ip = ip;
+		this.address = address;
 		this.port = port;
+		boolean connection = openConnection(address, port);
+		if(!connection) {
+			System.err.println("Connection failed!");
+			console("Connection to " + address + ":" + port + "failed!");
+		}
 		createWindow();
-		console("Successfully connected to " + ip + ":" + port);
+		console("Successfully connected to " + address + ":" + port);
 		console("Welcome, " + user + "!");
+	}
+	
+	private boolean openConnection(String address, int port) {
+		try {
+			socket = new DatagramSocket(port);
+			ip = InetAddress.getByName(address);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+			return false;
+		} catch (SocketException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
+	private String receive() {
+		byte[] data = new byte[1024];
+		DatagramPacket packet = new DatagramPacket(data, data.length);
+		try {
+			socket.receive(packet);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		String msg = new String(packet.getData());
+		return msg;
+	}
+	
+	private void send(final byte[] data) {
+		send= new Thread("Send") {
+			public void run() {
+				DatagramPacket packet = new DatagramPacket(data, data.length, ip, port);
+				try {
+					socket.send(packet);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		send.start();
 	}
 	
 	private void createWindow() {
