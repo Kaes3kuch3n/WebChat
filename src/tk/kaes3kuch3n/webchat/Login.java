@@ -10,13 +10,15 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Login extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtName;
-	private JTextField txtIp;
+	private JTextField txtAddress;
 	private JLabel lblIp;
 	private JTextField txtPort;
 	private JLabel lblPort;
@@ -42,44 +44,64 @@ public class Login extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
+		//Username
+		JLabel lblUsername = new JLabel("Username:");
+		lblUsername.setBounds(89, 25, 71, 16);
+		contentPane.add(lblUsername);
+		
 		txtName = new JTextField();
 		txtName.setBounds(25, 45, 200, 28);
 		contentPane.add(txtName);
 		txtName.setColumns(10);
 		
-		JLabel lblUsername = new JLabel("Username:");
-		lblUsername.setBounds(89, 25, 71, 16);
-		contentPane.add(lblUsername);
-		
-		txtIp = new JTextField();
-		txtIp.setBounds(25, 120, 200, 28);
-		contentPane.add(txtIp);
-		txtIp.setColumns(10);
-		
+		//IP-Address
 		lblIp = new JLabel("IP-Adresse:");
 		lblIp.setBounds(84, 100, 81, 16);
 		contentPane.add(lblIp);
+		
+		txtAddress = new JTextField();
+		txtAddress.setBounds(25, 120, 200, 28);
+		contentPane.add(txtAddress);
+		txtAddress.setColumns(10);
+		
+		lblBspIp = new JLabel("(z.B. 127.0.0.1)");
+		lblBspIp.setBounds(78, 150, 94, 16);
+		contentPane.add(lblBspIp);
+		
+		//Port
+		lblPort = new JLabel("Port:");
+		lblPort.setBounds(106, 200, 38, 16);
+		contentPane.add(lblPort);
 		
 		txtPort = new JTextField();
 		txtPort.setBounds(25, 220, 200, 28);
 		contentPane.add(txtPort);
 		txtPort.setColumns(10);
 		
-		lblPort = new JLabel("Port:");
-		lblPort.setBounds(106, 200, 38, 16);
-		contentPane.add(lblPort);
-		
-		lblBspIp = new JLabel("(z.B. 127.0.0.1)");
-		lblBspIp.setBounds(78, 150, 94, 16);
-		contentPane.add(lblBspIp);
-		
 		lblBspPort = new JLabel("(z.B. 55656)");
 		lblBspPort.setBounds(84, 250, 81, 16);
 		contentPane.add(lblBspPort);
 		
+		//Login-Button
 		JButton btnLogin = new JButton("Login");
+		btnLogin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String name = txtName.getText();
+				String address = txtAddress.getText();
+				int port = Integer.parseInt(txtPort.getText());
+				login(name, address, port);
+			}
+		});
 		btnLogin.setBounds(66, 325, 117, 29);
 		contentPane.add(btnLogin);
+		
+		this.getRootPane().setDefaultButton(btnLogin);
+	}
+	
+	private void login(String user, String ip, int port) {
+		dispose();
+		System.out.println("User: " + user + "\nIP-Adresse: " + ip + "\nPort: " + port);
+		new Client(user, ip, port);
 	}
 	
 	public static void main(String[] args) {
