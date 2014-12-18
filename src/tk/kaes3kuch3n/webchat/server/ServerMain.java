@@ -13,7 +13,7 @@ public class ServerMain {
 	public static void main(String[] args) {
 		int port;
 		if(args.length != 1) {
-			System.out.println("Too many args!");
+			System.out.println("Not the right args!");
 			return;
 		}
 		port = Integer.parseInt(args[0]);
