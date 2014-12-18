@@ -56,9 +56,9 @@ public class Client extends JFrame {
 			console("Connection to " + address + ":" + port + "failed!");
 		}
 		createWindow();
-		console("Successfully connected to " + address + ":" + port);
+		console("Connecting to " + address + ":" + port);
 		console("Welcome, " + user + "!");
-		String connection = user + " connected from " + address + ":" + port;
+		String connection = "/c/" + user;
 		send(connection.getBytes());
 	}
 	
@@ -178,7 +178,7 @@ public class Client extends JFrame {
 		if(msg.equals("")) return;
 		String message = user + ": " + msg;
 		console(message);
-		System.out.println(message.getBytes());
+		message = "/m/" + message;
 		send(message.getBytes());
 		txtMsg.setText("");
 	}
