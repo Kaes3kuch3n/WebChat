@@ -12,11 +12,10 @@ public class Client {
 	private String user;
 	private String address;
 	private int port;
-	
 	private DatagramSocket socket;
 	private InetAddress ip;
-	
 	private Thread send;
+	private int ID = -1;
 	
 	public Client(String user, String address, int port) {
 		this.user = user;
@@ -62,7 +61,7 @@ public class Client {
 	
 	//Send data
 	public void send(final byte[] data) {
-		send= new Thread("Send") {
+		send = new Thread("Send") {
 			public void run() {
 				DatagramPacket packet = new DatagramPacket(data, data.length, ip, port);
 				try {
@@ -75,8 +74,22 @@ public class Client {
 		send.start();
 	}
 	
+	public void close() {
+		new Thread() {
+			public void run() {
+				synchronized (socket) {
+					socket.close();
+				}
+			}
+		}.start();
+	}
 	
+	public void setID(int ID) {
+		this.ID = ID;
+	}
 	
-	
+	public int getID() {
+		return ID;
+	}
 	
 }
