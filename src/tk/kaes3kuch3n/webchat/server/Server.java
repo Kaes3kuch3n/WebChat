@@ -46,7 +46,7 @@ public class Server implements Runnable {
 				continue;
 			}
 			text = text.substring(1);
-			if(text.equals(raw)) {
+			if(text.equals("raw")) {
 				if(raw) System.out.println("Raw mode off.");
 				else System.out.println("Raw mode on.");
 				raw = !raw;
