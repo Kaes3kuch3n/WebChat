@@ -67,7 +67,7 @@ public class Client {
 				try {
 					socket.send(packet);
 				} catch (IOException e) {
-					e.printStackTrace();
+					System.out.println("Not connected to the server");
 				}
 			}
 		};
