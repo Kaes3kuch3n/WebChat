@@ -47,6 +47,8 @@ public class Server implements Runnable {
 			}
 			text = text.substring(1);
 			if(text.equals(raw)) {
+				if(raw) System.out.println("Raw mode off.");
+				else System.out.println("Raw mode on.");
 				raw = !raw;
 			}
 			else if(text.equals("who") | text.equals("online") | text.equals("clients")) {
@@ -89,8 +91,20 @@ public class Server implements Runnable {
 					}
 				}
 			}
+			else if(text.equals("stop")) stop();
+			else if(text.equals("help") | text.equals("?")) printHelp();
+			else System.out.println("Unnown command. Type /help or /? for a list of commands.");;
 		}
 		scanner.close();
+	}
+	
+	private void printHelp() {
+		System.out.println("===============Help===============");
+		System.out.println("/raw - Enables raw mode");
+		System.out.println("/who | /online | /clients - Shows a list of online users");
+		System.out.println("/kick [user|ID] - Kicks the specified user from the server");
+		System.out.println("/stop - Stops the server");
+		System.out.println("/help | /? - Shows the help message");
 	}
 
 	private void manageClients() {
@@ -98,6 +112,7 @@ public class Server implements Runnable {
 			public void run() {
 				while(running) {
 					sendToAll("/i/server");
+					sendStatus();
 					try {
 						Thread.sleep(2000);
 					} catch (InterruptedException e) {
@@ -124,6 +139,16 @@ public class Server implements Runnable {
 		manage.start();
 	}
 	
+	private void sendStatus() {
+		if(clients.size() <= 0) return;
+		String users = "/u/";
+		for(int i = 0; i < clients.size() - 1; i++) {
+			users += clients.get(i).user + " (ID: " + clients.get(i).getID() + ")/n/";
+		}
+		users += clients.get(clients.size() -1).user + " (ID: " + clients.get(clients.size() - 1).getID() + ")/e/";
+		sendToAll(users);
+	}
+	
 	private void receive() {
 		receive = new Thread("Receive") {
 			public void run() {
@@ -132,6 +157,8 @@ public class Server implements Runnable {
 					DatagramPacket packet = new DatagramPacket(data, data.length);
 					try {
 						socket.receive(packet);
+					} catch (SocketException e) {
+						System.out.println("Stopped server");
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -199,6 +226,14 @@ public class Server implements Runnable {
 		else {
 			System.out.println(string);
 		}
+	}
+	
+	private void stop() {
+		for(int i = 0; i < clients.size(); i++) {
+			disconnect(clients.get(i).getID(), true);
+		}
+		running = false;
+		socket.close();
 	}
 	
 	private void disconnect(int id, boolean status) {
