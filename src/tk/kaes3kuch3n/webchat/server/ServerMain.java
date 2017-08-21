@@ -21,7 +21,7 @@ public class ServerMain {
 			port = Integer.parseInt(args[0]);
 		}
 		else {
-			System.out.println("Usage: java -jar WebChat_Server.jar [port]");
+			System.err.println("Usage: java -jar WebChat_Server.jar [port]");
 			return;
 		}
 		new ServerMain(port);
