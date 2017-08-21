@@ -1,5 +1,6 @@
 package tk.kaes3kuch3n.webchat.server;
 
+@SuppressWarnings("unused")
 public class ServerMain {
 	
 	private int port;
